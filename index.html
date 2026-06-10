@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de Cliente — Dr. Fábio Araújo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0A1628;
+    --bg-card:   #0F1E38;
+    --bg-input:  #0D1A30;
+    --border:    #1E3358;
+    --border-focus: #C9A84C;
+    --gold:      #C9A84C;
+    --gold-soft: rgba(201,168,76,0.12);
+    --text:      #E8EDF4;
+    --text-muted:#7A90B0;
+    --text-label:#A8BEDB;
+    --accent-line: #C9A84C;
+    --red:       #E05C5C;
+    --green:     #4CAF82;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px 80px;
+  }
+
+  /* ── Cabeçalho ── */
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+    max-width: 560px;
+    width: 100%;
+  }
+
+  .oab-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  header h1 {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── Separador dourado ── */
+  .gold-rule {
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    margin: 18px auto;
+    opacity: 0.6;
+  }
+
+  /* ── Card do formulário ── */
+  .form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 40px 44px;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+  }
+
+  /* Linha dourada vertical — assinatura visual */
+  .form-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 32px; bottom: 32px;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+    border-radius: 0 1px 1px 0;
+    opacity: 0.55;
+  }
+
+  /* ── Seções ── */
+  .form-section {
+    margin-bottom: 36px;
+  }
+
+  .section-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Grid de campos ── */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .field-grid .span-2 { grid-column: 1 / -1; }
+
+  /* ── Campo individual ── */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-label);
+  }
+
+  label .req {
+    color: var(--gold);
+    margin-left: 2px;
+    font-size: 12px;
+  }
+
+  input, select, textarea {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 10px 13px;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    width: 100%;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A90B0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  select option {
+    background: #0F1E38;
+    color: var(--text);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 96px;
+    line-height: 1.6;
+  }
+
+  /* ── Campo condicional INSS ── */
+  .inss-field {
+    display: none;
+    background: var(--gold-soft);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 4px;
+  }
+
+  .inss-field.visible { display: block; }
+
+  .inss-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .inss-toggle input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--gold);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .inss-toggle span {
+    font-size: 13px;
+    color: var(--text-label);
+  }
+
+  /* ── Botão de envio ── */
+  .submit-btn {
+    width: 100%;
+    background: var(--gold);
+    border: none;
+    border-radius: 7px;
+    color: #0A1628;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 14px 24px;
+    transition: opacity 0.18s, transform 0.12s;
+    margin-top: 8px;
+  }
+
+  .submit-btn:hover:not(:disabled) { opacity: 0.88; }
+  .submit-btn:active:not(:disabled) { transform: scale(0.99); }
+  .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .submit-btn.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  /* ── Spinner ── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(10,22,40,0.3);
+    border-top-color: #0A1628;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+
+  /* ── Mensagens de erro inline ── */
+  .field-error {
+    font-size: 11px;
+    color: var(--red);
+    display: none;
+    margin-top: 3px;
+  }
+
+  .field.has-error input,
+  .field.has-error select,
+  .field.has-error textarea {
+    border-color: var(--red);
+  }
+
+  .field.has-error .field-error { display: block; }
+
+  /* ── Tela de sucesso ── */
+  #success-screen {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .success-icon {
+    width: 56px; height: 56px;
+    background: rgba(76,175,130,0.12);
+    border: 1px solid rgba(76,175,130,0.35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+
+  .success-icon svg { color: var(--green); }
+
+  #success-screen h2 {
+    font-family: 'EB Garamond', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  #success-screen .client-name {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  #success-screen p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+
+  .drive-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-soft);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 7px;
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: background 0.18s;
+  }
+
+  .drive-link:hover { background: rgba(201,168,76,0.2); }
+
+  .drive-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .new-cadastro-btn {
+    display: block;
+    margin: 16px auto 0;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .new-cadastro-btn:hover { color: var(--text-label); }
+
+  /* ── Alerta de erro geral ── */
+  #error-alert {
+    display: none;
+    background: rgba(224,92,92,0.1);
+    border: 1px solid rgba(224,92,92,0.3);
+    border-radius: 7px;
+    color: #E88888;
+    font-size: 13px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* ── Rodapé ── */
+  footer {
+    margin-top: 32px;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    opacity: 0.6;
+  }
+
+  /* ── Responsivo ── */
+  @media (max-width: 560px) {
+    .form-card { padding: 28px 20px 28px 26px; }
+    .field-grid { grid-template-columns: 1fr; }
+    .field-grid .span-2 { grid-column: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="oab-badge">OAB/PI 20.613 — Dr. Francisco Fábio Araujo Freitas</span>
+  <h1>Abertura de Cadastro</h1>
+  <div class="gold-rule"></div>
+  <p>Preencha os dados abaixo para dar início ao atendimento.<br>As informações são protegidas pelo sigilo profissional.</p>
+</header>
+
+<div class="form-card">
+  <div id="error-alert"></div>
+
+  <form id="cadastro-form" novalidate>
+
+    <!-- DADOS PESSOAIS -->
+    <div class="form-section">
+      <div class="section-eyebrow">Dados Pessoais</div>
+      <div class="field-grid">
+        <div class="field span-2" id="field-nome">
+          <label>Nome completo <span class="req">*</span></label>
+          <input type="text" name="nome" placeholder="Como consta no documento de identidade" autocomplete="name">
+          <span class="field-error">Informe o nome completo.</span>
+        </div>
+
+        <div class="field" id="field-cpf">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" name="cpf" placeholder="000.000.000-00" maxlength="14" autocomplete="off">
+          <span class="field-error">CPF inválido.</span>
+        </div>
+
+        <div class="field" id="field-rg">
+          <label>RG</label>
+          <input type="text" name="rg" placeholder="0000000">
+        </div>
+
+        <div class="field" id="field-nascimento">
+          <label>Data de nascimento <span class="req">*</span></label>
+          <input type="date" name="nascimento">
+          <span class="field-error">Informe a data de nascimento.</span>
+        </div>
+
+        <div class="field">
+          <label>Estado civil</label>
+          <select name="estado_civil">
+            <option value="">Selecione</option>
+            <option>Solteiro(a)</option>
+            <option>Casado(a)</option>
+            <option>Divorciado(a)</option>
+            <option>Viúvo(a)</option>
+            <option>União estável</option>
+          </select>
+        </div>
+
+        <div class="field span-2">
+          <label>Profissão</label>
+          <input type="text" name="profissao" placeholder="Ex: Aposentado, Empregado doméstico...">
+        </div>
+
+        <div class="field span-2">
+          <label>Nome da mãe</label>
+          <input type="text" name="nome_mae" placeholder="Nome completo da mãe">
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTATO -->
+    <div class="form-section">
+      <div class="section-eyebrow">Contato e Endereço</div>
+      <div class="field-grid">
+        <div class="field" id="field-whatsapp">
+          <label>WhatsApp <span class="req">*</span></label>
+          <input type="tel" name="whatsapp" placeholder="(00) 00000-0000" maxlength="15" autocomplete="tel">
+          <span class="field-error">Informe o WhatsApp.</span>
+        </div>
+
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" name="email" placeholder="email@exemplo.com" autocomplete="email">
+        </div>
+
+        <div class="field span-2">
+          <label>Endereço completo</label>
+          <input type="text" name="endereco" placeholder="Rua, número, bairro, cidade — UF">
+        </div>
+
+        <div class="field">
+          <label>CEP</label>
+          <input type="text" name="cep" placeholder="00000-000" maxlength="9">
+        </div>
+      </div>
+    </div>
+
+    <!-- ÁREA DO CASO -->
+    <div class="form-section">
+      <div class="section-eyebrow">Área do Caso</div>
+      <div class="field-grid">
+        <div class="field span-2" id="field-area">
+          <label>Área jurídica <span class="req">*</span></label>
+          <select name="area" id="select-area">
+            <option value="">Selecione a área</option>
+            <optgroup label="Previdenciário">
+              <option value="PREV-AUXILIO_ACIDENTE">Auxílio-Acidente</option>
+              <option value="PREV-AUXILIO_DOENCA">Auxílio-Doença</option>
+              <option value="PREV-APOSENTADORIA">Aposentadoria</option>
+              <option value="PREV-BPC_LOAS">BPC/LOAS</option>
+              <option value="PREV-PENSAO_MORTE">Pensão por Morte</option>
+              <option value="PREV-SALARIO_MATERNO">Salário-Maternidade</option>
+            </optgroup>
+            <optgroup label="Outras áreas">
+              <option value="TRAB">Trabalhista</option>
+              <option value="CONS">Consumidor</option>
+              <option value="BANC">Bancário</option>
+            </optgroup>
+          </select>
+          <span class="field-error">Selecione a área do caso.</span>
+        </div>
+
+        <div class="field span-2">
+          <label>Modalidade de atendimento</label>
+          <select name="modalidade">
+            <option value="Presencial">Presencial</option>
+            <option value="Online">Online (videoconferência)</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Campo condicional INSS — fora do grid -->
+      <div class="inss-field" id="inss-block" style="margin-top:12px;">
+        <label class="inss-toggle">
+          <input type="checkbox" name="senha_inss" id="check-inss">
+          <span>Senha do Meu INSS já recebida pelo escritório</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- NARRATIVA -->
+    <div class="form-section">
+      <div class="section-eyebrow">Relato do Caso</div>
+      <div class="field">
+        <label>Narrativa <span class="req">*</span></label>
+        <textarea name="narrativa" id="field-narrativa" placeholder="Descreva brevemente a situação do cliente: o que aconteceu, quando, e qual o pedido pretendido..."></textarea>
+        <span class="field-error" id="error-narrativa">Descreva a situação do caso.</span>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Abrir Cadastro</button>
+
+  </form>
+
+  <!-- Painel de diagnóstico -->
+  <div id="log-panel" style="display:none; margin-top:20px; background:#060f1e; border:1px solid #1E3358; border-radius:8px; padding:16px; font-family:monospace; font-size:12px; line-height:1.9;">
+    <div style="font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#C9A84C; margin-bottom:10px;">&#9654; Log de diagnóstico</div>
+    <div id="log-entries"></div>
+  </div>
+
+  <!-- Tela de sucesso -->
+  <div id="success-screen">
+    <div class="success-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <h2>Cadastro aberto — <span class="client-name" id="success-name"></span></h2>
+    <p>A pasta do cliente foi criada no Google Drive com todas as subpastas, ficha cadastral, checklist e timeline de andamento.</p>
+    <a href="#" id="drive-link" class="drive-link" target="_blank" rel="noopener">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Abrir pasta no Google Drive
+    </a>
+    <button class="new-cadastro-btn" id="new-cadastro-btn">Abrir novo cadastro</button>
+  </div>
+
+</div>
+
+<footer>
+  Uso interno — Dr. Francisco Fábio Araujo Freitas &nbsp;·&nbsp; OAB/PI 20.613
+</footer>
+
+<script>
+  // ── Configuração ──────────────────────────────────────────────
+  // Cole aqui a URL do webhook do n8n após ativar o fluxo
+  const WEBHOOK_URL = 'https://aprevadvocacia.app.n8n.cloud/webhook/agente1-cadastro';
+
+  // ── Máscara CPF ───────────────────────────────────────────────
+  document.querySelector('[name="cpf"]').addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g,'').slice(0,11);
+    if(v.length > 9)      v = v.replace(/(\d{3})(\d{3})(\d{3})(\d+)/,'$1.$2.$3-$4');
+    else if(v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d+)/,'$1.$2.$3');
+    else if(v.length > 3) v = v.replace(/(\d{3})(\d+)/,'$1.$2');
+    e.target.value = v;
+  });
+
+  // ── Máscara WhatsApp ──────────────────────────────────────────
+  document.querySelector('[name="whatsapp"]').addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g,'').slice(0,11);
+    if(v.length > 6)      v = v.replace(/(\d{2})(\d{5})(\d+)/,'($1) $2-$3');
+    else if(v.length > 2) v = v.replace(/(\d{2})(\d+)/,'($1) $2');
+    e.target.value = v;
+  });
+
+  // ── Máscara CEP ───────────────────────────────────────────────
+  document.querySelector('[name="cep"]').addEventListener('input', function(e) {
+    let v = e.target.value.replace(/\D/g,'').slice(0,8);
+    if(v.length > 5) v = v.replace(/(\d{5})(\d+)/,'$1-$2');
+    e.target.value = v;
+  });
+
+  // ── Campo INSS condicional ────────────────────────────────────
+  document.getElementById('select-area').addEventListener('change', function() {
+    const block = document.getElementById('inss-block');
+    const isPREV = this.value.startsWith('PREV');
+    block.classList.toggle('visible', isPREV);
+    if(!isPREV) document.getElementById('check-inss').checked = false;
+  });
+
+  // ── Validação ─────────────────────────────────────────────────
+  function setError(id, show) {
+    const el = document.getElementById(id) || document.querySelector(`[name="${id}"]`)?.closest('.field');
+    if(!el) return;
+    el.classList.toggle('has-error', show);
+  }
+
+  function validateForm(data) {
+    let ok = true;
+    const required = [
+      { key:'nome',       id:'field-nome' },
+      { key:'cpf',        id:'field-cpf'  },
+      { key:'nascimento', id:'field-nascimento' },
+      { key:'whatsapp',   id:'field-whatsapp' },
+      { key:'area',       id:'field-area' },
+    ];
+    required.forEach(r => {
+      const val = (data[r.key]||'').trim();
+      const el = document.getElementById(r.id);
+      if(!val) { ok = false; if(el) el.classList.add('has-error'); }
+      else { if(el) el.classList.remove('has-error'); }
+    });
+    // Narrativa — busca pelo textarea diretamente
+    const narrTA = document.querySelector('[name="narrativa"]');
+    const narrVal = (narrTA ? narrTA.value : '').trim();
+    const narrParent = narrTA ? narrTA.closest('.field') : null;
+    if(!narrVal || narrVal.length < 10) {
+      ok = false;
+      if(narrParent) narrParent.classList.add('has-error');
+    } else {
+      if(narrParent) narrParent.classList.remove('has-error');
+    }
+    return ok;
+  }
+
+  // ── Envio ─────────────────────────────────────────────────────
+  document.getElementById('cadastro-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const fd = new FormData(this);
+    const data = {};
+    fd.forEach((v,k) => { data[k] = v; });
+    data.senha_inss = document.getElementById('check-inss').checked;
+
+    // Limpa erros anteriores
+    document.querySelectorAll('.field').forEach(f => f.classList.remove('has-error'));
+    document.getElementById('error-alert').style.display = 'none';
+
+    if(!validateForm(data)) {
+      document.getElementById('error-alert').textContent = 'Preencha os campos obrigatórios antes de continuar.';
+      document.getElementById('error-alert').style.display = 'block';
+      document.querySelector('.has-error input, .has-error select, .has-error textarea')?.focus();
+      return;
+    }
+
+    // Estado de loading
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Criando pasta…';
+    btn.classList.add('loading');
+
+    // ── Funções de log visual ───────────────────────────────────
+    function log(msg, tipo) {
+      const panel = document.getElementById('log-panel');
+      const entries = document.getElementById('log-entries');
+      panel.style.display = 'block';
+      const cores = { info:'#A8BEDB', ok:'#4CAF82', erro:'#E05C5C', dados:'#C9A84C' };
+      const icones = { info:'●', ok:'✓', erro:'✗', dados:'→' };
+      const linha = document.createElement('div');
+      linha.style.color = cores[tipo] || cores.info;
+      const hora = new Date().toLocaleTimeString('pt-BR');
+      linha.textContent = hora + '  ' + (icones[tipo]||'●') + '  ' + msg;
+      entries.appendChild(linha);
+      panel.scrollTop = panel.scrollHeight;
+    }
+
+    try {
+      log('Workflow alvo: ' + WEBHOOK_URL, 'info');
+      log('Cliente: ' + data.nome + ' | Área: ' + data.area, 'dados');
+      log('Enviando dados para o n8n...', 'info');
+
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      log('Resposta recebida — HTTP ' + res.status, res.ok ? 'ok' : 'erro');
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+      log('n8n confirmou: ' + (json.mensagem || 'sucesso'), 'ok');
+      log('Pasta no Drive: ' + (json.pasta_url || '(URL não retornada)'), 'ok');
+
+      // Sucesso
+      document.getElementById('cadastro-form').style.display = 'none';
+      document.getElementById('log-panel').style.display = 'none';
+      const successScreen = document.getElementById('success-screen');
+      successScreen.style.display = 'block';
+      document.getElementById('success-name').textContent = json.cliente || data.nome.split(' ')[0];
+      const driveLink = document.getElementById('drive-link');
+      if(json.pasta_url) {
+        driveLink.href = json.pasta_url;
+        driveLink.style.display = 'inline-flex';
+      } else {
+        driveLink.style.display = 'none';
+      }
+
+    } catch(err) {
+      log('ERRO: ' + err.message, 'erro');
+      const alertEl = document.getElementById('error-alert');
+      let msg = '';
+      if(err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('fetch')) {
+        msg = 'Não foi possível conectar ao n8n. Causas mais comuns: (1) workflow não está ATIVO no n8n — verifique o toggle verde; (2) CORS bloqueado — veja o log abaixo.';
+        log('Dica: abra o n8n, entre no workflow e ative o toggle "Active" no canto superior direito.', 'info');
+      } else {
+        msg = 'Erro ao processar cadastro: ' + err.message;
+      }
+      alertEl.textContent = msg;
+      alertEl.style.display = 'block';
+      btn.disabled = false;
+      btn.innerHTML = 'Abrir Cadastro';
+      btn.classList.remove('loading');
+    }
+  });
+
+  // ── Novo cadastro ─────────────────────────────────────────────
+  document.getElementById('new-cadastro-btn').addEventListener('click', function() {
+    document.getElementById('success-screen').style.display = 'none';
+    const form = document.getElementById('cadastro-form');
+    form.reset();
+    form.style.display = 'block';
+    document.getElementById('inss-block').classList.remove('visible');
+    document.getElementById('error-alert').style.display = 'none';
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = false;
+    btn.innerHTML = 'Abrir Cadastro';
+    btn.classList.remove('loading');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
