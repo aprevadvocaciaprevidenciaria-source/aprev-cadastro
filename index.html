@@ -696,15 +696,30 @@
       log('Cliente: ' + data.nome + ' | Área: ' + data.area, 'dados');
       log('Enviando dados para o n8n...', 'info');
 
-      const res = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-
-      log('Resposta recebida — HTTP ' + res.status, res.ok ? 'ok' : 'erro');
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      const json = await res.json();
+      // Tenta application/json primeiro; se CORS bloquear, usa form-urlencoded (sem preflight)
+      let res, json;
+      try {
+        res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        log('Resposta recebida — HTTP ' + res.status, res.ok ? 'ok' : 'erro');
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        json = await res.json();
+      } catch(e1) {
+        log('Tentativa JSON falhou (' + e1.message + '), usando form-data...', 'info');
+        const params = new URLSearchParams();
+        Object.entries(data).forEach(([k,v]) => params.append(k, String(v)));
+        res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString()
+        });
+        log('Resposta form-data — HTTP ' + res.status, res.ok ? 'ok' : 'erro');
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        try { json = await res.json(); } catch(e) { json = { mensagem: 'Enviado', pasta_url: null }; }
+      }
       log('n8n confirmou: ' + (json.mensagem || 'sucesso'), 'ok');
       log('Pasta no Drive: ' + (json.pasta_url || '(URL não retornada)'), 'ok');
 
